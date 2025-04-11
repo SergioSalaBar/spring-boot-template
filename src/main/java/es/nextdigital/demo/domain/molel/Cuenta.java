@@ -16,3 +16,24 @@ public class Cuenta {
     private TipoCuenta tipo;
     private BigDecimal limiteCredito;
     private Cliente cliente;
+
+    public boolean puedeRetirar(BigDecimal monto) {
+        if (tipo == TipoCuenta.DEBITO) {
+            return saldo.compareTo(monto) >= 0;
+        } else if (tipo == TipoCuenta.CREDITO) {
+            return saldo.add(limiteCredito).compareTo(monto) >= 0;
+        }
+        return false;
+    }
+
+    public void retirar(BigDecimal monto) {
+        if (!puedeRetirar(monto)) {
+            throw new IllegalArgumentException("Fondos insuficientes.");
+        }
+        this.saldo = this.saldo.subtract(monto);
+    }
+
+    public void ingresar(BigDecimal monto) {
+        this.saldo = this.saldo.add(monto);
+    }
+}
